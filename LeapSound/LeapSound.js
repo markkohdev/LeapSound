@@ -9,8 +9,8 @@ It's reallys just for playing around.  We'll see where it goes :D
 ****************************************************/
 
 //Constants
-var KEYTAP_LIFETIME = 3;
-var KEYTAP_START_SIZE = 15;
+
+
 
 //Global Variables
 var canvas;
@@ -24,7 +24,8 @@ var frame;
 var log;
 
 //Global Buffers
-var keyTaps = [];
+
+
 
 $(document).ready(Init);
 
@@ -101,19 +102,19 @@ function onFrame(data) {
 
         switch (type) {
             case "circle":
-                onCircle(gesture);
+                //onCircle(frame,gesture);
                 break;
 
             case "swipe":
-                onSwipe(gesture);
+                //onSwipe(gesture);
                 break;
 
             case "screenTap":
-                onScreenTap(gesture);
+                //onScreenTap(gesture);
                 break;
 
             case "keyTap":
-                onKeyTap(gesture);
+                onKeyTap(frame, gesture);
                 break;
 
             default:
@@ -125,122 +126,10 @@ function onFrame(data) {
 
 
     //Do all gesture animation/cleanup
-    updateKeyTaps();
-    drawKeyTaps();
+    updateKeyTaps(frame);
+    drawKeyTaps(frame);
+    //updateCircles(frame);
+    //drawCircles(frame);
 
 }
 
-function postToGestureLog(string) {
-
-    var text = "<li>" + gestureCount + ".) " + string + "</li>";
-    log.prepend(text);
-    gestureCount++;
-}
-
-function onCircle(gesture) {
-    postToGestureLog("Circle");
-    var pos = leapToScene(frame, gesture.center);
-
-    var radius = gesture.radius;
-
-    var clockwise = false;
-
-    if (gesture.normal[2] <= 0) {
-        clockwise = true;
-    }
-
-    context.fillStyle = "#39AECF";
-    context.strokeStyle = "#39AECF";
-    context.lineWidth = 5;
-
-    context.beginPath();
-
-    context.arc(pos[0], pos[1], radius, 0, Math.PI * 2);
-
-    context.closePath();
-
-    if (clockwise)
-        context.stroke();
-    else
-        context.fill();
-}
-
-
-
-function onSwipe(gesture) {
-    postToGestureLog("Swipe");
-
-    var startPos = leapToScene(frame, gesture.startPosition);
-    var pos = leapToScene(frame, gesture.position);
-
-    //Set up the styles for the stroke
-    context.strokeStyle = "#FFA040";
-    context.lineWidth = 3;
-
-    context.beginPath();
-
-    context.moveTo(startPos[0], startPos[1]);
-
-    context.lineTo(pos[0], pos[1]);
-
-    context.closePath();
-    context.stroke();
-}
-
-function onScreenTap(gesture) {
-    postToGestureLog("Screen Tap");
-}
-
-function onKeyTap(gesture) {
-    postToGestureLog("Key Tap");
-
-    var pos = leapToScene(frame, gesture.position);
-
-    var time = frame.timestamp;
-
-    keyTaps.push([pos[0], pos[1], time]);
-}
-
-function drawKeyTaps() {
-    for (var i = 0; i < keyTaps.length; i++) {
-        //Get the info for the keyTap entry
-        var keyTap = keyTaps[i];
-        var age = frame.timestamp - keyTap[2];
-        age /= 1000000;
-        var x = keyTap[0];
-        var y = keyTap[1];
-
-        //Draw the tap
-        var completion = age / KEYTAP_LIFETIME;
-        var timeleft = 1 - completion;
-
-        //Draw the outer circle
-        context.strokeStyle = "#FF2300";
-        context.lineWidth = 3;
-        context.beginPath();
-        context.arc(x, y, KEYTAP_START_SIZE, 0, Math.PI * 2);
-        context.closePath();
-        context.stroke();
-
-        //Calculate opacity and size, then draw inner circle
-        var opacity = timeleft;
-        var radius = KEYTAP_START_SIZE * timeleft;
-        context.fillStyle = "rgba(256,33,0," + opacity + ")";
-        context.beginPath();
-        context.arc(x, y, radius, 0, Math.PI * 2);
-        context.closePath();
-        context.fill();
-    }
-}
-
-function updateKeyTaps() {
-    for (var i = 0; i < keyTaps.length; i++) {
-        var keyTap = keyTaps[i];
-        var age = frame.timestamp - keyTap[2];
-        age /= 1000000;
-
-        if (age >= KEYTAP_LIFETIME) {
-            keyTaps.splice(i, 1);
-        }
-    }
-}
