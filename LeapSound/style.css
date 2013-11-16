@@ -1,0 +1,29 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    background: #024;
+    color: #fff;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    text-align: center;
+}
+
+#wrap {
+    /*width: 600px;*/
+    margin: 0 auto;
+}
+
+.half {
+    width: 50%;
+    margin-top: 100px;
+    float: left;
+}
+
+div {
+    text-align: center;
+    font-size: 12px;
+    font-family: Helvetica, Arial, sans-serif;
+}
+/*#canvas {
+                width: 50%;
+                height: 50%;
+            }*/
