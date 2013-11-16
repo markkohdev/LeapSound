@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Web
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B8E4D49-5010-409C-A107-218255598201}"
 	ProjectSection(SolutionItems) = preProject
+		circles.js = circles.js
+		Intervals.js = Intervals.js
 		jquery-2.0.3.min.js = jquery-2.0.3.min.js
+		keyTaps.js = keyTaps.js
 		leap.min.js = leap.min.js
 		LeapSound.html = LeapSound.html
 		LeapSound.js = LeapSound.js
+		LeapSoundUtils.js = LeapSoundUtils.js
+		Mode.js = Mode.js
 		style.css = style.css
+		swipes.js = swipes.js
 	EndProjectSection
 EndProject
 Global

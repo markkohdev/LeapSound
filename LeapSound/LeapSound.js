@@ -8,8 +8,13 @@ It's reallys just for playing around.  We'll see where it goes :D
 
 ****************************************************/
 
-//Constants
+/// <reference path="LeapSoundUtils.js" />
 
+//Constants
+var MAX_FREQ = 18000;
+var MIN_FREQ = 200;
+var MIN_VOLUME = 0.33;
+var MAX_VOLUME = 0.83;
 
 
 //Global Variables
@@ -22,19 +27,23 @@ var height;
 var gestureCount = 0;
 var frame;
 var log;
+var audioContext;
+var oscillator;
+var lastPlayedType;
 
 //Global Buffers
-
+var audioBuffer = null;
 
 
 $(document).ready(Init);
 
 function Init() {
+
+    //**** CANVAS AND DOM SETUP ****
     //Grab the canvas on the page
     canvas = $("#canvas")[0];
     console.log(canvas);
     context = canvas.getContext('2d');
-    whateverDiv = $("#whateverDiv").first();
 
     //Set up the canvas for drawing
     width = canvas.width;
@@ -45,6 +54,12 @@ function Init() {
     //Init the Gesture Log
     log = $("#GestureLog");
 
+    //**** AUDIO SETUP ****
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioContext = new AudioContext();
+    oscillator = audioContext.createOscillator();
+
+    //**** CONTROLLER SETUP ****
     //Create a controller
     controller = new Leap.Controller({ enableGestures: true });
 
@@ -54,9 +69,11 @@ function Init() {
     controller.on('deviceDisconnected', onControllerDisconnected);
     controller.on('deviceFrame', onFrame);
 
+    //Add audio eventListeners
+    $("#stopAudio").on('click', stopSound);
+
     //Connect the controller
     controller.connect();
-
 
 }
 
@@ -133,3 +150,23 @@ function onFrame(data) {
 
 }
 
+
+//Given a y component of a keyTap, play a note
+function playSound(y) {
+    var freq = (1 - (y / height)) * MAX_FREQ;
+    var volume = LeapSoundUtils.randRange(MIN_VOLUME, MAX_VOLUME);
+    console.log(oscillator);
+    oscillator.frequency.value = freq;
+
+    var gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    gainNode.gain.value = volume;
+
+    gainNode.connect(audioContext.destination);
+    oscillator.start(0);
+}
+
+function stopSound() {
+
+    oscillator.disconnect();
+}

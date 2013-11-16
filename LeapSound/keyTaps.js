@@ -28,6 +28,9 @@ function onKeyTap(frame,gesture) {
     var time = frame.timestamp;
 
     keyTaps.push([pos[0], pos[1], time]);
+
+    playSound(pos[1]);
+
 }
 
 function drawKeyTaps(frame) {
