@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Voice test</title>
+
+    <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="synth.js"></script>
+    <script type="text/javascript" src="voice.js"></script>
+    <script type="text/javascript">
+        var context = new webkitAudioContext();
+        var synth = new Synth(context, 0, 200, 75, 200, 4);
+
+        var notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        $(document).ready(function () {
+            for (var i = 0; i <= 8; i++) {
+                for (var j = 0; j < notes.length ; j++) {
+                    if ((i != 0 && i != 8) || (i == 0 && j > 8) || (i == 8 && j == 0)) {
+                        var id = notes[j] + i;
+                        var click = $('<button></button>');
+                        click.text(id);
+                        click.addClass("note");
+                        click.data("key", notes[j]);
+                        click.data("octave", i);
+                        $("#buttons").append(click);
+                    }
+
+                }
+            }
+
+            $(".note").on('mouseover',function () {
+                var key = $(this).data("key");
+                var octave = $(this).data("octave");
+                synth.hitNote([key, octave]);
+                console.log("Hitting: " + [key,octave]);
+            });
+        });
+
+    </script>
+
+</head>
+<body>
+    <h1>Jawn!</h1>
+    <div id="buttons">
+
+
+    </div>
+</body>
+</html>
