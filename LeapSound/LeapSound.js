@@ -59,6 +59,7 @@ function Init() {
     audioContext = new AudioContext();
     oscillator = audioContext.createOscillator();
 
+
     //**** CONTROLLER SETUP ****
     //Create a controller
     controller = new Leap.Controller({ enableGestures: true });
@@ -154,13 +155,23 @@ function onFrame(data) {
 //Given a y component of a keyTap, play a note
 function playSound(y) {
     var freq = (1 - (y / height)) * MAX_FREQ;
-    var volume = LeapSoundUtils.randRange(MIN_VOLUME, MAX_VOLUME);
+    //var volume = LeapSoundUtils.randRange(MIN_VOLUME, MAX_VOLUME);
+    var volume = 0.5;
     console.log(oscillator);
-    oscillator.frequency.value = freq;
+
+    //oscillator.frequency.value = freq;
+    oscillator.frequency.setValueAtTime(freq, 0);
 
     var gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
-    gainNode.gain.value = volume;
+    //gainNode.gain.value = volume;
+
+    var now = audioContext.currentTime;
+    //var envAttackEnd = now + (0 / 10.0);
+
+    gainNode.gain.setValueAtTime(0.0, now);
+    gainNode.gain.linearRampToValueAtTime(1.0, now);
+    gainNode.gain.setTargetValueAtTime((1 / 100.0), now, (20 / 100.0) + 0.001);
 
     gainNode.connect(audioContext.destination);
     oscillator.start(0);
